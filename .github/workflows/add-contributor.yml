@@ -20,7 +20,14 @@ jobs:
 
     - name: Add contributor to file
       run: |
-        echo "- @${{ github.actor }}" >> Contributors.md
-        git add Contributors.md
-        git commit -m "chore: add contributor ${{ github.actor }}"
-        git push
+        # Check if the contributor is already in the Contributors.md file
+        if ! grep -q "@${{ github.actor }}" Contributors.md; then
+          # If not, append the contributor's name to the file
+          echo "- @${{ github.actor }}" >> Contributors.md
+          git add Contributors.md
+          git commit -m "chore: add contributor ${{ github.actor }}"
+          git push
+        else
+          # If already added, do nothing and print a message
+          echo "Contributor @${{ github.actor }} is already in the file. Skipping."
+        fi
