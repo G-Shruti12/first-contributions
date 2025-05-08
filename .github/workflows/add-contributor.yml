@@ -1,0 +1,26 @@
+name: Add Contributor
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  add-contributor:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Add contributor to file
+      run: |
+        echo "- @${{ github.actor }}" >> Contributors.md
+        git add Contributors.md
+        git commit -m "chore: add contributor ${{ github.actor }}"
+        git push
